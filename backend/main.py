@@ -40,10 +40,25 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS configuration for seamless frontend integration
+# CORS configuration for seamless frontend integration (configurable for production).
+# In production, set CORS_ORIGINS to a comma-separated list of your allowed frontend origins.
+# e.g. CORS_ORIGINS=https://your-app.vercel.app,https://custom-domain.com
+# WARNING: do NOT use "*" with allow_credentials=True — browsers reject this (CORS spec violation).
+cors_origins_env = os.getenv("BACKEND_CORS_ORIGINS") or os.getenv("CORS_ORIGINS", "")
+if cors_origins_env.strip():
+    allowed_origins = [o.strip() for o in cors_origins_env.split(",") if o.strip()]
+else:
+    # Development defaults — explicit origins only (no wildcard, incompatible with credentials)
+    allowed_origins = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+    ]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

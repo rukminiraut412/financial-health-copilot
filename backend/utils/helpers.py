@@ -83,9 +83,9 @@ def parse_date_safe(val: Any) -> Optional[str]:
     return None
 
 
-def format_currency(amount: Union[int, float], currency_symbol: str = "$") -> str:
+def format_currency(amount: Union[int, float], currency_symbol: str = "₹") -> str:
     """
-    Formats a numeric amount to a standard currency representation (e.g. '$1,250.00').
+    Formats a numeric amount to a standard currency representation (e.g. '₹1,250.00').
     """
     try:
         val = float(amount)

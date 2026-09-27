@@ -101,7 +101,7 @@ def synthetic_analysis() -> AnalysisResponse:
                 description="Luxury Watch Store",
                 amount=350.0,
                 category="Shopping",
-                reason="Expense of $350.00 is 2.5x higher than average",
+                reason="Expense of ₹350.00 is 2.5x higher than average",
                 severity="medium",
             )
         ],
@@ -134,8 +134,8 @@ def synthetic_analysis() -> AnalysisResponse:
         actions=[
             ActionItem(
                 title="Review Food Spending",
-                description="Trimming Food expenses could save $120.00 monthly.",
-                reason="Food spending at $800.00 exceeds 25% of total expenses.",
+                description="Trimming Food expenses could save ₹120.00 monthly.",
+                reason="Food spending at ₹800.00 exceeds 25% of total expenses.",
                 category="Food",
                 priority="high",
                 estimated_monthly_impact=120.0,
@@ -143,7 +143,7 @@ def synthetic_analysis() -> AnalysisResponse:
             ),
             ActionItem(
                 title="Audit Recurring Subscriptions",
-                description="Review Netflix Subscription ($15.99/mo).",
+                description="Review Netflix Subscription (₹15.99/mo).",
                 reason="Active subscription detected: Netflix Subscription.",
                 category="Entertainment",
                 priority="low",
@@ -152,7 +152,7 @@ def synthetic_analysis() -> AnalysisResponse:
             ),
             ActionItem(
                 title="Review Unusual Spending Flag",
-                description="Verify Luxury Watch Store ($350.00).",
+                description="Verify Luxury Watch Store (₹350.00).",
                 reason="Transaction flagged as anomaly (medium severity).",
                 category="Shopping",
                 priority="medium",
@@ -193,7 +193,7 @@ def test_highest_spending_category_question(synthetic_analysis: AnalysisResponse
     for q in queries:
         res = generate_copilot_response(q, synthetic_analysis)
         assert "Rent" in res.response
-        assert "$1,500.00" in res.response
+        assert "₹1,500.00" in res.response
         assert "category_spending" in res.sources
         assert isinstance(res.actions, list)
 
@@ -217,7 +217,7 @@ def test_savings_improvement_question(synthetic_analysis: AnalysisResponse):
 def test_anomaly_question(synthetic_analysis: AnalysisResponse):
     res = generate_copilot_response("What unusual spending did you detect?", synthetic_analysis)
     assert "Luxury Watch Store" in res.response
-    assert "$350.00" in res.response
+    assert "₹350.00" in res.response
     assert "anomalies" in res.sources
     assert any(a.action_type == "review_anomaly" for a in res.actions)
 
@@ -232,7 +232,7 @@ def test_anomaly_question(synthetic_analysis: AnalysisResponse):
 def test_subscription_question(synthetic_analysis: AnalysisResponse):
     res = generate_copilot_response("Which subscriptions should I review?", synthetic_analysis)
     assert "Netflix Subscription" in res.response
-    assert "$15.99" in res.response
+    assert "₹15.99" in res.response
     assert "subscriptions" in res.sources
     assert any(a.action_type == "review_subscription" for a in res.actions)
 

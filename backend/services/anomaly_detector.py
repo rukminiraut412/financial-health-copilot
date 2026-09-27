@@ -59,7 +59,7 @@ def detect_anomalies(transactions: List[Transaction]) -> List[AnomalyItem]:
                                 description=t.description,
                                 amount=round(t.amount, 2),
                                 category=cat,
-                                reason=f"Unusually high {cat} charge ({ratio:.1f}x typical of ${baseline:,.2f})",
+                                reason=f"Unusually high {cat} charge ({ratio:.1f}x typical of ₹{baseline:,.2f})",
                                 severity=severity,
                             )
                         )
@@ -84,7 +84,7 @@ def detect_anomalies(transactions: List[Transaction]) -> List[AnomalyItem]:
                             description=t.description,
                             amount=round(t.amount, 2),
                             category=cat,
-                            reason=f"Amount (${t.amount:,.2f}) is {ratio:.1f}x higher than typical {cat} spending (avg: ${baseline:,.2f})",
+                            reason=f"Amount (₹{t.amount:,.2f}) is {ratio:.1f}x higher than typical {cat} spending (avg: ₹{baseline:,.2f})",
                             severity=severity,
                         )
                     )
@@ -100,7 +100,7 @@ def detect_anomalies(transactions: List[Transaction]) -> List[AnomalyItem]:
                         description=single_tx.description,
                         amount=round(single_tx.amount, 2),
                         category=cat,
-                        reason=f"Amount (${single_tx.amount:,.2f}) is {ratio:.1f}x higher than median discretionary spending (${overall_median:,.2f})",
+                        reason=f"Amount (₹{single_tx.amount:,.2f}) is {ratio:.1f}x higher than median discretionary spending (₹{overall_median:,.2f})",
                         severity=severity,
                     )
                 )

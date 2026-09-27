@@ -21,7 +21,7 @@ def _clean_text(text: str) -> str:
 
 
 def _format_currency(val: float) -> str:
-    return f"${val:,.2f}"
+    return f"₹{val:,.2f}"
 
 
 def _format_analysis_summary_for_llm(analysis: AnalysisResponse) -> str:
@@ -32,9 +32,9 @@ def _format_analysis_summary_for_llm(analysis: AnalysisResponse) -> str:
     top_cat = analysis.top_spending_categories[0].category if analysis.top_spending_categories else "None"
     return (
         f"Financial Summary:\n"
-        f"- Total Income: ${_format_currency(analysis.summary.total_income)}\n"
-        f"- Total Expenses: ${_format_currency(analysis.summary.total_expenses)}\n"
-        f"- Net Savings: ${_format_currency(analysis.summary.net_savings)} (Rate: {analysis.summary.savings_rate:.1f}%)\n"
+        f"- Total Income: {_format_currency(analysis.summary.total_income)}\n"
+        f"- Total Expenses: {_format_currency(analysis.summary.total_expenses)}\n"
+        f"- Net Savings: {_format_currency(analysis.summary.net_savings)} (Rate: {analysis.summary.savings_rate:.1f}%)\n"
         f"- Health Score: {analysis.health_score.score}/100 ({analysis.health_score.status})\n"
         f"- Top Spending Category: {top_cat}\n"
         f"- Discretionary Spending: {analysis.essential_vs_non_essential.non_essential_percentage:.1f}%\n"
@@ -225,6 +225,8 @@ def generate_copilot_response(
 
     # 5. Financial Health Score Calculation Intent
     if any(phrase in query for phrase in [
+        "what is my financial health score", "what is my health score", "financial health score",
+        "my financial health score", "what is my score", "my score", "health score",
         "how is my financial health score calculated", "how is the score calculated",
         "how is health score calculated", "how is my score calculated",
         "explain score", "score breakdown", "how did you calculate my score",

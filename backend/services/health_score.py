@@ -126,7 +126,7 @@ def calculate_health_score(transactions: List[Transaction]) -> HealthScoreRespon
         insights.append(f"Savings rate is modest at {savings_rate:.1f}%. Aim to save at least 15-20% to build an emergency fund.")
     else:
         deficit = abs(net_savings)
-        insights.append(f"Spending exceeds income with a net cash deficit of ${deficit:,.2f}. Immediate expense trimming recommended.")
+        insights.append(f"Spending exceeds income with a net cash deficit of ₹{deficit:,.2f}. Immediate expense trimming recommended.")
 
     if essential_ratio <= 50.0:
         insights.append(f"Essential living costs are well-controlled at {essential_ratio:.1f}% of income (target: ≤50%).")

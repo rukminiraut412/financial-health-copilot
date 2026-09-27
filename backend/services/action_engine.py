@@ -58,7 +58,7 @@ def generate_actions(
             ActionItem(
                 title=f"Review unusual charge: {top_anomaly.description}",
                 description=(
-                    f"A transaction of ${top_anomaly.amount:,.2f} on {top_anomaly.date} "
+                    f"A transaction of ₹{top_anomaly.amount:,.2f} on {top_anomaly.date} "
                     f"was flagged as atypical for {top_anomaly.category}. "
                     f"Confirm if this was an authorized, planned expense."
                 ),
@@ -84,8 +84,8 @@ def generate_actions(
                 ActionItem(
                     title=f"Address budget overrun in {top_overspent.category}",
                     description=(
-                        f"{top_overspent.category} spending (${top_overspent.actual:,.2f}) exceeded its "
-                        f"${top_overspent.budget:,.2f} budget limit by ${over_amount:,.2f} "
+                        f"{top_overspent.category} spending (₹{top_overspent.actual:,.2f}) exceeded its "
+                        f"₹{top_overspent.budget:,.2f} budget limit by ₹{over_amount:,.2f} "
                         f"({top_overspent.utilization_percentage:.1f}% utilized). Review recent purchases "
                         f"or adjust the budget allocation."
                     ),
@@ -105,14 +105,14 @@ def generate_actions(
                 ActionItem(
                     title="Eliminate monthly cash deficit",
                     description=(
-                        f"Your monthly expenses exceed income by ${deficit:,.2f}. "
+                        f"Your monthly expenses exceed income by ₹{deficit:,.2f}. "
                         f"Focus on reducing non-essential spending to restore positive monthly cash flow."
                     ),
                     action_type="increase_savings",
                     category=None,
                     priority="high",
                     estimated_monthly_impact=deficit,
-                    reason=f"Expenses currently exceed monthly income by ${deficit:,.2f}, creating a cash deficit.",
+                    reason=f"Expenses currently exceed monthly income by ₹{deficit:,.2f}, creating a cash deficit.",
                 )
             )
         elif summary.savings_rate < 15.0:
@@ -124,7 +124,7 @@ def generate_actions(
                     title="Increase monthly savings rate",
                     description=(
                         f"Your current savings rate is {summary.savings_rate:.1f}%. "
-                        f"Saving an additional estimated ${target_savings:,.2f} monthly will help you "
+                        f"Saving an additional estimated ₹{target_savings:,.2f} monthly will help you "
                         f"reach the healthy 20% savings milestone."
                     ),
                     action_type="increase_savings",
@@ -145,8 +145,8 @@ def generate_actions(
                 title="Reduce non-essential discretionary spending",
                 description=(
                     f"Non-essential wants represent {essential_vs_non_essential.non_essential_percentage:.1f}% "
-                    f"of total expenses (${non_ess_amount:,.2f}). Trimming 15% across dining, shopping, "
-                    f"and entertainment could free up an estimated ${trim_target:,.2f} monthly."
+                    f"of total expenses (₹{non_ess_amount:,.2f}). Trimming 15% across dining, shopping, "
+                    f"and entertainment could free up an estimated ₹{trim_target:,.2f} monthly."
                 ),
                 action_type="reduce_non_essential_spending",
                 category=None,
@@ -173,8 +173,8 @@ def generate_actions(
                 title=f"Reduce {top_cat} spending",
                 description=(
                     f"{top_cat} spending is high compared with your overall expenses "
-                    f"(${top_spent:,.2f}, representing {top_pct:.1f}% of expenses). "
-                    f"Consider reducing it by about 15% to save an estimated ${trim_est:,.2f} monthly."
+                    f"(₹{top_spent:,.2f}, representing {top_pct:.1f}% of expenses). "
+                    f"Consider reducing it by about 15% to save an estimated ₹{trim_est:,.2f} monthly."
                 ),
                 action_type="reduce_category_spending",
                 category=top_cat,
@@ -195,14 +195,14 @@ def generate_actions(
                 ActionItem(
                     title=f"Review recurring subscriptions ({sub_count} active)",
                     description=(
-                        f"Detected {sub_count} recurring subscriptions totaling ${total_sub_cost:,.2f}/month. "
-                        f"Auditing unused memberships could save an estimated ${est_savings:,.2f} monthly."
+                        f"Detected {sub_count} recurring subscriptions totaling ₹{total_sub_cost:,.2f}/month. "
+                        f"Auditing unused memberships could save an estimated ₹{est_savings:,.2f} monthly."
                     ),
                     action_type="review_subscription",
                     category="Bills & Utilities",
                     priority=priority,
                     estimated_monthly_impact=est_savings,
-                    reason=f"Found {sub_count} recurring subscriptions totaling ${total_sub_cost:,.2f}/month.",
+                    reason=f"Found {sub_count} recurring subscriptions totaling ₹{total_sub_cost:,.2f}/month.",
                 )
             )
 
