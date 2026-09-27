@@ -6,7 +6,7 @@ Handles transaction ingestion, automated categorization, and cash flow analysis.
 import os
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 # Ensure project root is present in sys.path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -17,12 +17,18 @@ from fastapi import FastAPI, File, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from backend.schemas.analysis import AnalysisRequest, AnalysisResponse
+from backend.schemas.analysis import (
+    AnalysisRequest,
+    AnalysisResponse,
+    CopilotRequest,
+    CopilotResponse,
+)
 from backend.schemas.transaction import (
     Transaction,
     TransactionCategory,
     TransactionUploadResponse,
 )
+from backend.services.ai_copilot import generate_copilot_response
 from backend.services.analytics import generate_basic_analysis
 from backend.services.categorizer import get_all_categories, get_category_rules
 from backend.services.transaction_processor import parse_csv_file
@@ -43,6 +49,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# In-memory storage for latest financial analysis context
+LATEST_ANALYSIS: Optional[AnalysisResponse] = None
+
+
+def get_current_analysis() -> Optional[AnalysisResponse]:
+    """Retrieves the latest analysis context stored in memory."""
+    global LATEST_ANALYSIS
+    return LATEST_ANALYSIS
+
+
+def set_current_analysis(analysis: Optional[AnalysisResponse]) -> None:
+    """Sets or clears the current analysis context stored in memory."""
+    global LATEST_ANALYSIS
+    LATEST_ANALYSIS = analysis
+
 
 @app.get("/", summary="Root Health & Overview")
 def root() -> Dict[str, Any]:
@@ -61,6 +82,7 @@ def root() -> Dict[str, Any]:
             "categories": "GET /api/categories",
             "sample_data": "GET /api/sample",
             "sample_analysis": "GET /api/sample/analyze",
+            "copilot_chat": "POST /api/copilot/chat",
         },
     }
 
@@ -133,7 +155,10 @@ def analyze_transactions(payload: AnalysisRequest) -> AnalysisResponse:
             detail="Transaction list is empty. Provide at least one transaction for analysis.",
         )
 
-    return generate_basic_analysis(payload.transactions, budgets=payload.budgets)
+    global LATEST_ANALYSIS
+    result = generate_basic_analysis(payload.transactions, budgets=payload.budgets)
+    LATEST_ANALYSIS = result
+    return result
 
 
 @app.post(
@@ -152,8 +177,14 @@ async def analyze_csv_direct(file: UploadFile = File(...)) -> AnalysisResponse:
             detail="Please upload a valid CSV file.",
         )
 
-    content = await file.read()
-    transactions, errors = parse_csv_file(content)
+    try:
+        content = await file.read()
+        transactions, errors = parse_csv_file(content)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"An error occurred while reading or parsing the CSV file: {str(e)}",
+        )
 
     if not transactions:
         detail = "No valid transactions could be processed from the CSV."
@@ -164,7 +195,10 @@ async def analyze_csv_direct(file: UploadFile = File(...)) -> AnalysisResponse:
             detail=detail,
         )
 
-    return generate_basic_analysis(transactions)
+    global LATEST_ANALYSIS
+    result = generate_basic_analysis(transactions)
+    LATEST_ANALYSIS = result
+    return result
 
 
 @app.get("/api/categories", summary="List Available Categories")
@@ -209,4 +243,24 @@ def get_sample_analysis() -> AnalysisResponse:
     with open(sample_file, "rb") as f:
         transactions, _ = parse_csv_file(f.read())
 
-    return generate_basic_analysis(transactions)
+    global LATEST_ANALYSIS
+    result = generate_basic_analysis(transactions)
+    LATEST_ANALYSIS = result
+    return result
+
+
+@app.post(
+    "/api/copilot/chat",
+    response_model=CopilotResponse,
+    summary="Ask AI Financial Copilot",
+)
+def copilot_chat(payload: CopilotRequest) -> CopilotResponse:
+    """
+    Accepts a user natural-language financial question and generates an
+    explainable, deterministic response grounded in structured financial analysis.
+    Uses explicitly provided analysis if present, or the latest cached analysis,
+    or falls back to sample transaction analysis.
+    """
+    analysis = payload.analysis or get_current_analysis()
+    return generate_copilot_response(payload.message, analysis)
+

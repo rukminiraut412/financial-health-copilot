@@ -143,6 +143,46 @@ def test_post_analyze_csv_invalid_file(client):
     assert "valid csv" in response.json()["detail"].lower()
 
 
+def test_post_analyze_csv_with_malformed_rows(client):
+    # CSV with mixed valid rows and malformed rows (invalid date, missing desc, non-numeric amount)
+    csv_bytes = (
+        b"date,description,amount,type\n"
+        b"2026-09-01,Valid Salary,30000,income\n"
+        b"bad-date,Bad Date Transaction,100,expense\n"
+        b"2026-09-03,,500,expense\n"
+        b"2026-09-04,Invalid Non-numeric Amount,not_a_number,expense\n"
+        b"2026-09-05,Valid Grocery Store,1500,expense\n"
+    )
+    files = {"file": ("mixed.csv", io.BytesIO(csv_bytes), "text/csv")}
+    response = client.post("/api/analyze-csv", files=files)
+    assert response.status_code == 200
+    data = response.json()
+
+    # Valid rows are processed safely
+    assert data["summary"]["total_income"] == 30000.0
+    assert data["summary"]["total_expenses"] == 1500.0
+    assert "Food" in data["category_spending"]
+    assert "health_score" in data
+    assert "actions" in data
+    assert "summary" in data
+    assert "monthly_trends" in data
+    assert "essential_vs_non_essential" in data
+    assert "budget_summary" in data
+
+
+def test_post_analyze_csv_no_valid_rows(client):
+    # CSV where all rows are malformed
+    csv_bytes = (
+        b"date,description,amount,type\n"
+        b"not-a-date,,not-a-number,expense\n"
+        b"invalid,Also Invalid,-999,expense\n"
+    )
+    files = {"file": ("corrupt.csv", io.BytesIO(csv_bytes), "text/csv")}
+    response = client.post("/api/analyze-csv", files=files)
+    assert response.status_code == 400
+    assert "no valid transactions" in response.json()["detail"].lower()
+
+
 def test_get_sample_analyze_endpoint(client):
     response = client.get("/api/sample/analyze")
     assert response.status_code == 200

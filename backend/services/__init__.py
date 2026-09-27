@@ -38,7 +38,7 @@ from backend.services.health_score import calculate_health_score
 from backend.services.anomaly_detector import detect_anomalies
 from backend.services.subscription_detector import detect_subscriptions
 from backend.services.budget_engine import evaluate_budget, generate_budget_recommendations
-from backend.services.ai_copilot import ask_copilot
+from backend.services.ai_copilot import ask_copilot, generate_copilot_response
 from backend.services.action_engine import generate_actions, generate_action_items
 
 __all__ = [
@@ -72,6 +72,7 @@ __all__ = [
     "detect_subscriptions",
     "generate_budget_recommendations",
     "ask_copilot",
+    "generate_copilot_response",
     "generate_action_items",
     "STANDARD_CATEGORIES",
     "ESSENTIAL_CATEGORIES",
