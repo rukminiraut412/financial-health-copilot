@@ -322,12 +322,18 @@ def get_date_range(transactions: List[Transaction]) -> DateRange:
     return DateRange(start_date=dates[0], end_date=dates[-1])
 
 
-def generate_basic_analysis(transactions: List[Transaction]) -> AnalysisResponse:
+def generate_basic_analysis(
+    transactions: List[Transaction],
+    budgets: Optional[Dict[str, float]] = None,
+) -> AnalysisResponse:
     """
     Aggregates cash flow, category breakdowns, monthly trends, essential vs non-essential,
-    and Financial Health Score into a unified analysis response.
+    Financial Health Score, anomaly detection, subscription detection, and budget comparison.
     """
     from backend.services.health_score import calculate_health_score
+    from backend.services.anomaly_detector import detect_anomalies
+    from backend.services.subscription_detector import detect_subscriptions
+    from backend.services.budget_engine import evaluate_budget
 
     summary = calculate_cash_flow(transactions)
     category_spending = calculate_category_spending(transactions)
@@ -337,6 +343,9 @@ def generate_basic_analysis(transactions: List[Transaction]) -> AnalysisResponse
     monthly_trends = calculate_monthly_trends(transactions)
     essential_vs_non_essential = calculate_essential_vs_non_essential(transactions)
     health_score = calculate_health_score(transactions)
+    anomalies = detect_anomalies(transactions)
+    subscriptions = detect_subscriptions(transactions)
+    budget_summary = evaluate_budget(transactions, budgets=budgets)
     date_range = get_date_range(transactions)
 
     return AnalysisResponse(
@@ -348,6 +357,9 @@ def generate_basic_analysis(transactions: List[Transaction]) -> AnalysisResponse
         monthly_trends=monthly_trends,
         essential_vs_non_essential=essential_vs_non_essential,
         health_score=health_score,
+        anomalies=anomalies,
+        subscriptions=subscriptions,
+        budget_summary=budget_summary,
         total_transactions=len(transactions),
         date_range=date_range,
     )

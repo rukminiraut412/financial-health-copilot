@@ -37,11 +37,12 @@ from backend.services.analytics import (
 from backend.services.health_score import calculate_health_score
 from backend.services.anomaly_detector import detect_anomalies
 from backend.services.subscription_detector import detect_subscriptions
-from backend.services.budget_engine import generate_budget_recommendations
+from backend.services.budget_engine import evaluate_budget, generate_budget_recommendations
 from backend.services.ai_copilot import ask_copilot
 from backend.services.action_engine import generate_action_items
 
 __all__ = [
+    "evaluate_budget",
     "parse_csv_file",
     "transactions_to_dataframe",
     "dataframe_to_transactions",

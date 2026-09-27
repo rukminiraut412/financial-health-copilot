@@ -62,6 +62,42 @@ class HealthScoreResponse(BaseModel):
     insights: List[str] = Field(default_factory=list, description="Actionable observations and tips")
 
 
+class AnomalyItem(BaseModel):
+    date: str = Field(..., description="Date of anomalous transaction")
+    description: str = Field(..., description="Description of transaction")
+    amount: float = Field(..., description="Transaction amount")
+    category: str = Field(..., description="Category of transaction")
+    reason: str = Field(..., description="Explainable reason why flagged as anomaly")
+    severity: str = Field(..., description="Severity level: low, medium, or high")
+
+
+class SubscriptionItem(BaseModel):
+    description: str = Field(..., description="Subscription or recurring merchant name")
+    category: str = Field(..., description="Category of recurring charge")
+    amount: float = Field(..., description="Typical charge per billing cycle")
+    frequency: str = Field(default="Monthly", description="Frequency of recurring charge (e.g. Monthly)")
+    occurrences: int = Field(..., description="Number of observed occurrences in statement")
+    estimated_monthly_cost: float = Field(..., description="Estimated cost per month")
+
+
+class CategoryBudgetStatus(BaseModel):
+    category: str = Field(..., description="Category name")
+    budget: float = Field(..., description="Allocated budget amount")
+    actual: float = Field(..., description="Actual spending in category")
+    remaining: float = Field(..., description="Remaining budget amount (negative if over budget)")
+    utilization_percentage: float = Field(..., description="Percentage of budget consumed")
+    status: str = Field(..., description="Status: under_budget, near_limit, or over_budget")
+
+
+class BudgetSummary(BaseModel):
+    categories: List[CategoryBudgetStatus] = Field(default_factory=list, description="Breakdown per budgeted category")
+    total_budget: float = Field(default=0.0, description="Sum of all category budgets")
+    total_actual: float = Field(default=0.0, description="Sum of actual spending in budgeted categories")
+    total_remaining: float = Field(default=0.0, description="Remaining budget overall")
+    overall_utilization_percentage: float = Field(default=0.0, description="Overall budget utilization percentage")
+    overspent_categories: List[str] = Field(default_factory=list, description="List of categories that exceeded budget")
+
+
 class DateRange(BaseModel):
     start_date: Optional[str] = Field(None, description="Earliest transaction date")
     end_date: Optional[str] = Field(None, description="Latest transaction date")
@@ -69,6 +105,7 @@ class DateRange(BaseModel):
 
 class AnalysisRequest(BaseModel):
     transactions: List[Transaction] = Field(..., description="List of transactions to analyze")
+    budgets: Optional[Dict[str, float]] = Field(default=None, description="Optional category budgets for comparison")
 
 
 class AnalysisResponse(BaseModel):
@@ -80,5 +117,8 @@ class AnalysisResponse(BaseModel):
     monthly_trends: List[MonthlyTrend]
     essential_vs_non_essential: EssentialVsNonEssential
     health_score: HealthScoreResponse
+    anomalies: List[AnomalyItem] = Field(default_factory=list, description="Detected spending anomalies")
+    subscriptions: List[SubscriptionItem] = Field(default_factory=list, description="Detected recurring subscriptions")
+    budget_summary: BudgetSummary = Field(default_factory=BudgetSummary, description="Budget utilization summary")
     total_transactions: int
     date_range: DateRange

@@ -133,7 +133,7 @@ def analyze_transactions(payload: AnalysisRequest) -> AnalysisResponse:
             detail="Transaction list is empty. Provide at least one transaction for analysis.",
         )
 
-    return generate_basic_analysis(payload.transactions)
+    return generate_basic_analysis(payload.transactions, budgets=payload.budgets)
 
 
 @app.post(
