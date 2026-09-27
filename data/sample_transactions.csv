@@ -1,0 +1,36 @@
+date,description,amount,type
+2026-09-01,Monthly Salary,45000.00,income
+2026-09-02,Apartment Monthly Rent,15000.00,expense
+2026-09-02,Trader Joes Groceries,124.50,expense
+2026-09-03,Starbucks Morning Coffee,6.75,expense
+2026-09-03,Shell Gas Station Fuel,45.00,expense
+2026-09-04,Electric & Power Co Utility,85.20,expense
+2026-09-05,Whole Foods Market,156.80,expense
+2026-09-05,Freelance Web Design Payment,3500.00,income
+2026-09-06,Uber Ride to Downtown,24.50,expense
+2026-09-07,Italian Trattoria Dinner,68.00,expense
+2026-09-08,Netflix Monthly Subscription,15.99,expense
+2026-09-08,Spotify Premium,10.99,expense
+2026-09-09,Amazon Household Supplies,89.50,expense
+2026-09-10,High Speed Internet Bill,60.00,expense
+2026-09-11,City Pharmacy Prescription,32.40,expense
+2026-09-12,Local Supermarket Groceries,95.30,expense
+2026-09-13,Subway Sandwich Lunch,12.50,expense
+2026-09-14,Gym Fitness Membership,50.00,expense
+2026-09-15,Quarterly Investment Dividend,450.00,income
+2026-09-15,Dental Checkup & Cleaning,120.00,expense
+2026-09-16,Uber Eats Dinner Delivery,38.25,expense
+2026-09-17,Mobile Phone Carrier Bill,45.00,expense
+2026-09-18,City Metro Transit Pass,75.00,expense
+2026-09-19,Nike Running Shoes,110.00,expense
+2026-09-20,Trader Joes Weekly Groceries,115.60,expense
+2026-09-21,Steam PC Game,29.99,expense
+2026-09-22,Artisan Bakery & Cafe,14.80,expense
+2026-09-23,City Water Utility,35.50,expense
+2026-09-24,Chevron Gas Station,42.00,expense
+2026-09-25,McDonalds Lunch,11.20,expense
+2026-09-26,Movie Theater Tickets,34.00,expense
+2026-09-27,Fresh Produce Market,48.60,expense
+2026-09-28,Cloud Storage Backup,9.99,expense
+2026-09-29,Mutual Fund Deposit,500.00,expense
+2026-09-30,Apartment Maintenance Fee,120.00,expense
