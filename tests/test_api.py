@@ -1,6 +1,6 @@
 """
 Tests for FastAPI API endpoints.
-Tests GET /health, POST /api/analyze (including anomalies, subscriptions, and budgets),
+Tests GET /health, POST /api/analyze (including anomalies, subscriptions, budgets, and actions),
 POST /api/analyze-csv, and GET /api/sample/analyze.
 """
 
@@ -93,6 +93,18 @@ def test_post_analyze_endpoint_with_new_mvp_features(client):
     assert "Rent" in cat_names
     assert "Entertainment" in cat_names
 
+    # Actions from Action Engine
+    assert "actions" in data
+    assert isinstance(data["actions"], list)
+    assert len(data["actions"]) >= 3
+    assert len(data["actions"]) <= 5
+    first_action = data["actions"][0]
+    assert "title" in first_action
+    assert "description" in first_action
+    assert "action_type" in first_action
+    assert "priority" in first_action
+    assert "reason" in first_action
+
 
 def test_post_analyze_empty_transactions(client):
     response = client.post("/api/analyze", json={"transactions": []})
@@ -119,6 +131,9 @@ def test_post_analyze_csv_endpoint(client):
     assert "anomalies" in data
     assert "subscriptions" in data
     assert "budget_summary" in data
+    assert "actions" in data
+    assert isinstance(data["actions"], list)
+    assert len(data["actions"]) > 0
 
 
 def test_post_analyze_csv_invalid_file(client):
@@ -144,3 +159,7 @@ def test_get_sample_analyze_endpoint(client):
     assert "anomalies" in data
     assert "subscriptions" in data
     assert "budget_summary" in data
+    assert "actions" in data
+    assert isinstance(data["actions"], list)
+    assert len(data["actions"]) >= 3
+    assert len(data["actions"]) <= 5

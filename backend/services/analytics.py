@@ -334,6 +334,7 @@ def generate_basic_analysis(
     from backend.services.anomaly_detector import detect_anomalies
     from backend.services.subscription_detector import detect_subscriptions
     from backend.services.budget_engine import evaluate_budget
+    from backend.services.action_engine import generate_actions
 
     summary = calculate_cash_flow(transactions)
     category_spending = calculate_category_spending(transactions)
@@ -346,6 +347,16 @@ def generate_basic_analysis(
     anomalies = detect_anomalies(transactions)
     subscriptions = detect_subscriptions(transactions)
     budget_summary = evaluate_budget(transactions, budgets=budgets)
+    actions = generate_actions(
+        summary=summary,
+        category_spending=category_spending,
+        category_percentages=category_percentages,
+        essential_vs_non_essential=essential_vs_non_essential,
+        health_score=health_score,
+        anomalies=anomalies,
+        subscriptions=subscriptions,
+        budget_summary=budget_summary,
+    )
     date_range = get_date_range(transactions)
 
     return AnalysisResponse(
@@ -360,6 +371,7 @@ def generate_basic_analysis(
         anomalies=anomalies,
         subscriptions=subscriptions,
         budget_summary=budget_summary,
+        actions=actions,
         total_transactions=len(transactions),
         date_range=date_range,
     )

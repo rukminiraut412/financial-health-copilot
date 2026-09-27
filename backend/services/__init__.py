@@ -39,9 +39,10 @@ from backend.services.anomaly_detector import detect_anomalies
 from backend.services.subscription_detector import detect_subscriptions
 from backend.services.budget_engine import evaluate_budget, generate_budget_recommendations
 from backend.services.ai_copilot import ask_copilot
-from backend.services.action_engine import generate_action_items
+from backend.services.action_engine import generate_actions, generate_action_items
 
 __all__ = [
+    "generate_actions",
     "evaluate_budget",
     "parse_csv_file",
     "transactions_to_dataframe",
